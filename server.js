@@ -102,11 +102,14 @@ async function run() {
   fs.writeFileSync('./qr.html', `<img src="${res}">`);
   console.log('Wrote to ./qr.html');
 }
-async function run(){
+async function run() {
   const img = await jimp.read(fs.readFileSync('./qr_photo.png'));
+
   const qr = new QRReader();
-  const value = await new Promise ((resolve, reject) =>{
-    qr.callback = (err, v) => err !null ? reject(err) : resolve(v);
+
+  // qrcode-reader's API doesn't support promises, so wrap it
+  const value = await new Promise((resolve, reject) => {
+    qr.callback = (err, v) => err != null ? reject(err) : resolve(v);
     qr.decode(img.bitmap);
   });
 }
